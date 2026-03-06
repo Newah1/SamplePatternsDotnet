@@ -1,5 +1,3 @@
 <Solution>
-  <Folder Name="/Decorator/">
-    <Project Path="Decorator/Decorator/Decorator.csproj" />
-  </Folder>
+  <Project Path="Patterns/Decorator/Decorator.csproj" />
 </Solution>
