@@ -2,17 +2,15 @@
 using System.Collections.Generic;
 using System.Text;
 using Decorator.Decorators;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Decorator
 {
     internal class CustomerReceiptFactory
     {
-        public ICustomerReceipt? GetCustomerReceipt(CustomerReceiptSettings settings)
+        public static ICustomerReceipt? GetCustomerReceipt(CustomerReceiptSettings settings, IServiceProvider serviceProvider)
         {
-            var decorators = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(d => d.GetTypes())
-                .Where(t => t.IsSubclassOf(typeof(CustomerReceiptDecorator)))
-                .ToList();
+            var decorators = GetTypes();
 
             var adapters = new List<CustomerReceiptDecorator>();
 
@@ -34,7 +32,7 @@ namespace Decorator
                     args = [underlyingCustomerReceipt];
                 }
 
-                adapter = TryCreateInstance(matchingType, args);
+                adapter = TryCreateInstance(matchingType, args, serviceProvider);
 
                 if (adapter == null)
                 {
@@ -48,11 +46,11 @@ namespace Decorator
             return previousAdapter;
         }
 
-        private object? TryCreateInstance(Type matchingType, object?[]? args)
+        private static object? TryCreateInstance(Type matchingType, object?[]? args, IServiceProvider serviceProvider)
         {
             try
             {
-                var adapter = Activator.CreateInstance(matchingType, args);
+                var adapter = ActivatorUtilities.CreateInstance(serviceProvider, matchingType, args);
                 return adapter;
             }
             catch (Exception)
@@ -61,6 +59,15 @@ namespace Decorator
             }
         }
 
+        public static List<Type> GetTypes()
+        {
+            var decorators = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(d => d.GetTypes())
+                .Where(t => t.IsSubclassOf(typeof(CustomerReceiptDecorator)))
+                .ToList();
+
+            return decorators;
+        }
     }
 
     internal record CustomerReceiptSettings(List<string> Adapters)

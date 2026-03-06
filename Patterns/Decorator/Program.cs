@@ -1,10 +1,26 @@
 ﻿using Decorator;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 
-// could be dynamic, apply two decorators in settings
-var config = new CustomerReceiptSettings(new List<string>() { "CustomerDrink", "CustomerDiscountCode" });
 
-var customerReceipt= new CustomerReceiptFactory().GetCustomerReceipt(config);
+var applicationBuilder = Host.CreateApplicationBuilder();
 
-var amount = customerReceipt?.CalculateAmount() ?? -1;
+var services = applicationBuilder.Services;
 
-Console.WriteLine(amount);
+services.AddHostedService<StartupService>();
+
+services.BuildServiceProvider();
+
+applicationBuilder.Logging.AddSimpleConsole(options =>
+{
+    options.SingleLine = true;
+    options.ColorBehavior = LoggerColorBehavior.Disabled;
+});
+    
+
+
+var host = applicationBuilder.Build();
+
+host.Run();
