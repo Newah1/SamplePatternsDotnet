@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/Decorator/">
+    <Project Path="Decorator/Decorator/Decorator.csproj" />
+  </Folder>
+</Solution>
