@@ -6,9 +6,11 @@ namespace Decorator.Decorators
 {
     internal class CustomerDiscountCodeDecorator(ICustomerReceipt underlying) : CustomerReceiptDecorator(underlying), ICustomerReceipt
     {
-        public int CalculateAmount()
+        private readonly ICustomerReceipt _underlying = underlying;
+
+        public new int CalculateAmount()
         {
-            return (int)Math.Floor(underlying.CalculateAmount() * 0.275);
+            return (int)Math.Floor(_underlying.CalculateAmount() * 0.275);
         }
     }
 }

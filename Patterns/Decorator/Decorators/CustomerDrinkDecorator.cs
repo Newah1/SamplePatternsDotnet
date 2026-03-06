@@ -7,11 +7,12 @@ namespace Decorator.Decorators
 {
     internal class CustomerDrinkDecorator(ICustomerReceipt underlying, ILogger<CustomerDrinkDecorator> logger) : CustomerReceiptDecorator(underlying), ICustomerReceipt
     {
-        private const int _drinkAmount = 600;
-        public int CalculateAmount()
+        private readonly ICustomerReceipt _underlying = underlying;
+        private const int DrinkAmount = 600;
+        public new int CalculateAmount()
         {
-            logger.LogInformation("Calculating amount for drink {amount}", _drinkAmount);
-            return underlying.CalculateAmount() + _drinkAmount;
+            logger.LogInformation("Calculating amount for drink {amount}", DrinkAmount);
+            return _underlying.CalculateAmount() + DrinkAmount;
         }
     }
 }

@@ -25,12 +25,8 @@ namespace Decorator
                     continue;
                 }
 
-                object? adapter;
-                object[] args = [previousAdapter];
-                if (previousAdapter == null)
-                {
-                    args = [underlyingCustomerReceipt];
-                }
+                object? adapter = null;
+                object[] args = [(object?)previousAdapter ?? underlyingCustomerReceipt];
 
                 adapter = TryCreateInstance(matchingType, args, serviceProvider);
 
@@ -46,7 +42,7 @@ namespace Decorator
             return previousAdapter;
         }
 
-        private static object? TryCreateInstance(Type matchingType, object?[]? args, IServiceProvider serviceProvider)
+        private static object? TryCreateInstance(Type matchingType, object[] args, IServiceProvider serviceProvider)
         {
             try
             {
